@@ -1,0 +1,19 @@
+/* Chat-specific styles: typing animation only. Tailwind is loaded from index.css. */
+
+.typing {
+  @apply flex items-center justify-center py-3;
+}
+
+.typing span {
+  @apply w-2 h-2 mx-0.5 rounded-full bg-gray-400;
+  animation: typing-bounce 1.4s ease-in-out infinite both;
+}
+
+.typing span:nth-child(1) { animation-delay: 0.2s; }
+.typing span:nth-child(2) { animation-delay: 0.4s; }
+.typing span:nth-child(3) { animation-delay: 0.6s; }
+
+@keyframes typing-bounce {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(0.6); opacity: 0.6; }
+}
