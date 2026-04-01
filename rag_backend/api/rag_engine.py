@@ -11,6 +11,7 @@ from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_groq import ChatGroq
 
 load_dotenv()
+
 # 2. CONSTANTS
 BASE_DIR = Path(__file__).resolve().parent.parent
 PDF_DIR = BASE_DIR / "pdfs"
@@ -139,9 +140,14 @@ Keep the response brief and friendly."""
         docs = self.retriever.invoke(f"query: {question}")
         prompt, is_greeting = self._build_prompt(question, docs)
         response = self.llm.invoke(prompt)
-        self.history.append({"question": question, "answer": response.content})
+        # Handle both string and AIMessage responses
+        if hasattr(response, 'content'):
+            answer = response.content
+        else:
+            answer = str(response)
+        self.history.append({"question": question, "answer": answer})
         return {
-            "answer": response.content,
+            "answer": answer,
             "sources": [] if is_greeting else self._build_sources(docs),
             "is_greeting": is_greeting,
         }
@@ -154,8 +160,13 @@ Keep the response brief and friendly."""
         docs = self.retriever.invoke(f"query: {question}")
         prompt, is_greeting = self._build_prompt(question, docs, history_text)
         response = self.llm.invoke(prompt)
+        # Handle both string and AIMessage responses
+        if hasattr(response, 'content'):
+            answer = response.content
+        else:
+            answer = str(response)
         return {
-            "answer": response.content,
+            "answer": answer,
             "sources": [] if is_greeting else self._build_sources(docs),
             "is_greeting": is_greeting,
         }
@@ -174,7 +185,7 @@ class RAGEngine:
         return cls._instance
 
     def _initialize(self):
-        print("🚀 Initializing Groq + Chroma RAG Engine...")
+        print("🚀 Initializing GROQ + Chroma RAG Engine...")
         self.vectorstore = load_vectorstore()
         # Use MMR (Maximum Marginal Relevance) for better diversity in results
         self.retriever = self.vectorstore.as_retriever(
@@ -182,6 +193,7 @@ class RAGEngine:
             search_kwargs={"k": 8, "fetch_k": 15}  # Get more candidates, return top 8
         )
 
+        # Using GROQ LLM
         self.llm = ChatGroq(
             groq_api_key=os.getenv("GROQ_API_KEY"),
             model_name="llama-3.3-70b-versatile",

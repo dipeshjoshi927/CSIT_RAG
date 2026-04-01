@@ -1,40 +1,12 @@
-# Python
+# Sensitive data
+rag_backend/pdfs/
+rag_backend/chroma_db/
+*.sqlite3
+
+# Env & cache
+.env
 venv/
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
-
-# Environment variables
-.env
-
-# Django
-db.sqlite3
-*.log
 
 # Node
 node_modules/
-rag_frontend/node_modules/
-npm-debug.log*
-
-# React build
-build/
-dist/
-
-# Mac / Windows
-.DS_Store
-Thumbs.db
-
-# IDE
-.vscode/
-.idea/
-
-# Chroma vector database
-rag_backend/api/chroma_db/
-
-# Uploaded PDFs (optional)
-rag_backend/api/pdfs/
-
-# Environment files
-*.env
-.env.*
